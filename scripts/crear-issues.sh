@@ -22,7 +22,7 @@ M2="M2 · Completo"
 FECHA_M1="2026-10-24T23:59:59Z"   # fin de la semana 1
 FECHA_M2="2026-10-31T23:59:59Z"   # fecha de entrega
 PROYECTO="DevHub"                  # nombre del tablero en GitHub Projects ("" para no usarlo)
-PERSONA_A=""                       # usuario de GitHub de la Persona A (ej: "jm-dev"); "" = sin asignar
+PERSONA_A="JM132005"               # usuario de GitHub de la Persona A (ej: "jm-dev"); "" = sin asignar
 PERSONA_B=""                       # usuario de GitHub de la Persona B
 
 echo "📌 Repositorio: $(gh repo view --json nameWithOwner -q .nameWithOwner)"
