@@ -1,6 +1,6 @@
 # Backend DevHub (NestJS)
 
-Ver el README principal y docs/GUIA-INICIO.md en la raíz del repositorio.
+Ver el README principal y docs/02-INSTALACION.md en la raíz del repositorio.
 
 ```bash
 npm run start:dev   # API en http://localhost:3000/api
