@@ -4,6 +4,7 @@ import {
   puedeCrearTarea,
   puedeMoverA,
   specCompletada,
+  asignarResponsable
 } from './tareas.reglas.js';
 
 describe('Reglas de tareas', () => {
@@ -27,4 +28,17 @@ describe('Reglas de tareas', () => {
     expect(specCompletada(['HECHO', 'EN_PROGRESO'])).toBe(false);
     expect(specCompletada([])).toBe(false);
   });
+
+  it('Issue 16: debe cambiar el responsable si el usuario es válido', () => {
+    const tarea = { id: 1, responsable: 'Juan' };
+    const resultado = asignarResponsable(tarea, 'Sandy');
+    expect(resultado.responsable).toBe('Sandy');
+  });
+
+  it('Issue 16: debe lanzar error si el usuario no es válido', () => {
+    const tarea = { id: 1, responsable: 'Juan' };
+    expect(() => asignarResponsable(tarea, '')).toThrowError('Usuario no válido');
+  });
 });
+
+

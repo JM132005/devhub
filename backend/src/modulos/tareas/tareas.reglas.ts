@@ -22,3 +22,13 @@ export function puedeMoverA(
 export function specCompletada(estadosTareas: EstadoTarea[]): boolean {
   return estadosTareas.length > 0 && estadosTareas.every((e) => e === 'HECHO');
 }
+
+// Al final de tareas.reglas.js o .ts
+
+export function asignarResponsable(tarea: any, nuevoResponsable: string) {
+  if (!nuevoResponsable || nuevoResponsable.trim() === '') {
+    throw new Error('Usuario no válido');
+  }
+  tarea.responsable = nuevoResponsable;
+  return tarea;
+}
