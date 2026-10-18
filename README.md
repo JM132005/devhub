@@ -45,8 +45,8 @@ npm start                     # → http://localhost:4200
 ## 🧪 Pruebas
 ```bash
 cd backend
-npm test            # 19 pruebas unitarias de reglas de negocio (no necesita MongoDB)
-npm run test:e2e    # flujo SDD completo contra MongoDB (usa la base devhub_test y la borra)
+npm test            # 34 pruebas unitarias de reglas de negocio (no necesita MongoDB)
+npm run test:e2e    # 16 pruebas del flujo SDD completo contra MongoDB (usa la base devhub_test y la borra)
 npm run lint
 ```
 
@@ -73,7 +73,7 @@ devhub/
 ├── frontend/src/app/              Angular
 │   ├── Entidades/  Servicios/  Controlador/  Componentes/  Formularios/  Paginas/  Utils/
 ├── specs/                         especificaciones SDD (constitución + 001…006)
-├── docs/                          flujo de trabajo y guía de inicio
+├── docs/                          documentación completa (00–07)
 ├── scripts/crear-issues.sh        crea etiquetas, milestones e Issues en GitHub
 └── .github/                       pipeline CI, plantilla de PR y de Issues
 ```
@@ -98,5 +98,17 @@ devhub/
 | GET | `/proyectos/:id/metricas` · `/metricas/resumen` | Dashboard |
 | GET · POST | `/prompts` · `/prompts/:id/votar` | Biblioteca de prompts |
 
+## 📚 Documentación
+| # | Documento |
+|---|---|
+| 00 | [Índice](docs/00-INDICE.md) |
+| 01 | [Qué es DevHub y qué se hizo](docs/01-QUE-ES-DEVHUB.md) |
+| 02 | [Instalación y comprobación](docs/02-INSTALACION.md) |
+| 03 | [Comandos de uso diario](docs/03-COMANDOS.md) |
+| 04 | [Flujo de trabajo del equipo](docs/04-FLUJO-DE-TRABAJO.md) |
+| 05 | [Pruebas y guion de la demo](docs/05-PRUEBAS-Y-DEMO.md) |
+| 06 | [Bitácora: problemas y soluciones](docs/06-BITACORA.md) |
+| 07 | [Evidencias para el informe](docs/07-EVIDENCIAS.md) |
+
 ## 🤝 Cómo contribuir
-Lee [`docs/flujo-de-trabajo.md`](docs/flujo-de-trabajo.md): rama por Issue → PR → CI verde → review → merge.
+Lee [`docs/04-FLUJO-DE-TRABAJO.md`](docs/04-FLUJO-DE-TRABAJO.md): rama por Issue → PR → CI verde → review → merge.
