@@ -1,0 +1,121 @@
+<!-- proyecto-detalle.html -->
+@let p = proyecto();
+@if (p) {
+  <header class="encabezado">
+    <div>
+      <a routerLink="/proyectos" class="subtitulo">← Proyectos</a>
+      <h1>{{ p.nombre }}</h1>
+      <p class="subtitulo">
+        {{ p.cliente || 'Sin cliente' }} · Líder: {{ nombreDe(p.liderId) }}
+        @if (p.repoGithub) {
+          · <a [href]="'https://github.com/' + p.repoGithub" target="_blank" rel="noopener" class="mono">⎇ {{ p.repoGithub }}</a>
+        }
+      </p>
+    </div>
+    @if (esGestor()) {
+      <!-- El líder cambia la fase del proyecto (RN-06 se valida en la API) -->
+      <label class="campo">
+        <span>Estado del proyecto</span>
+        <select [ngModel]="p.estado" (ngModelChange)="cambiarEstadoProyecto($event)">
+          @for (e of estadosProyecto; track e) {
+            <option [value]="e">{{ etiqueta(e) }}</option>
+          }
+        </select>
+      </label>
+    } @else {
+      <app-insignia-estado [estado]="p.estado" />
+    }
+  </header>
+
+  @if (error()) {
+    <div class="aviso aviso-error">⚠️ {{ error() }}</div>
+  }
+  @if (exito()) {
+    <div class="aviso aviso-ok">✔ {{ exito() }}</div>
+  }
+
+  <!-- Pestañas -->
+  <nav class="pestanas">
+    <button [class.activa]="activa() === 'resumen'" (click)="activa.set('resumen')">📊 Resumen</button>
+    <button [class.activa]="activa() === 'specs'" (click)="activa.set('specs')">📝 Specs ({{ specs().length }})</button>
+    <button [class.activa]="activa() === 'kanban'" (click)="activa.set('kanban')">🗂️ Kanban ({{ tareas().length }})</button>
+    <button [class.activa]="activa() === 'revisiones'" (click)="activa.set('revisiones')">🔍 Revisiones ({{ revisiones().length }})</button>
+  </nav>
+
+  <!-- @switch: muestra solo el bloque de la pestaña activa -->
+  @switch (activa()) {
+    @case ('resumen') {
+      @if (metricas(); as m) {
+        <app-panel-metricas [metricas]="m" />
+      }
+      @if (esGestor()) {
+        <section class="tarjeta" style="margin-top: 16px">
+          <h3>Agregar milestone</h3>
+          <div class="fila">
+            <input style="max-width: 260px" [(ngModel)]="nuevoMilestone.nombre" placeholder="Sprint 3" />
+            <input style="max-width: 180px" type="date" [(ngModel)]="nuevoMilestone.fecha" />
+            <button class="btn btn-primario" (click)="agregarMilestone()">Agregar</button>
+          </div>
+        </section>
+      }
+    }
+
+    @case ('specs') {
+      @if (formulario() === 'spec') {
+        <app-formulario-spec (guardar)="crearSpec($event)" (cancelar)="formulario.set(null)" />
+      } @else {
+        <div class="fila separado" style="margin-bottom: 12px">
+          <p class="subtitulo">Primero se especifica, luego se programa (SDD).</p>
+          <button class="btn btn-primario" (click)="formulario.set('spec')">+ Nueva spec</button>
+        </div>
+      }
+      <div class="pila">
+        @for (s of specs(); track s._id) {
+          <a class="tarjeta enlace-tarjeta" [routerLink]="['/specs', s._id]">
+            <div class="fila separado">
+              <strong><code>{{ s.codigo }}</code> {{ s.titulo }}</strong>
+              <app-insignia-estado [estado]="s.estado" />
+            </div>
+            <small class="subtitulo">{{ s.historia }}</small>
+            <small class="subtitulo">v{{ s.version }} · autor: {{ s.autorId?.nombre }}</small>
+          </a>
+        } @empty {
+          <p class="vacio">Aún no hay especificaciones.</p>
+        }
+      </div>
+    }
+
+    @case ('kanban') {
+      @if (tareaParaPr(); as t) {
+        <app-formulario-revision
+          [tarea]="t" [revisores]="revisores()" [repoGithub]="p.repoGithub"
+          (guardar)="registrarPr($event)" (cancelar)="tareaParaPr.set(null)" />
+        <br />
+      }
+      @if (formulario() === 'tarea') {
+        <app-formulario-tarea
+          [specsAprobadas]="specsAprobadas()" [equipo]="equipo()" [milestones]="p.milestones"
+          (guardar)="crearTarea($event)" (cancelar)="formulario.set(null)" />
+        <br />
+      } @else if (esGestor()) {
+        <div class="fila separado" style="margin-bottom: 12px">
+          <p class="subtitulo">Las tareas nacen de specs aprobadas (RN-02).</p>
+          <button class="btn btn-primario" (click)="formulario.set('tarea')">+ Nueva tarea</button>
+        </div>
+      }
+      <app-tablero-kanban
+        [tareas]="tareas()" [usuarioId]="usuarioId()" [esGestor]="esGestor()"
+        (mover)="moverTarea($event)" (registrarPr)="tareaParaPr.set($event)" />
+    }
+
+    @case ('revisiones') {
+      <app-lista-revisiones
+        [revisiones]="revisiones()" [usuarioId]="usuarioId()"
+        (aprobar)="aprobarRevision($event)" (pedirCambios)="pedirCambios($event)" />
+    }
+  }
+} @else if (error()) {
+  <div class="aviso aviso-error">{{ error() }}</div>
+} @else {
+  <p class="vacio">Cargando…</p>
+}

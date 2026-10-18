@@ -1,0 +1,72 @@
+<!-- inicio.html -->
+<header class="encabezado">
+  <div>
+    <h1>Hola, {{ auth.usuario()?.nombre }} 👋</h1>
+    <p class="subtitulo">Esto es lo que tienes pendiente hoy.</p>
+  </div>
+  <a class="btn btn-primario" routerLink="/proyectos">Ver proyectos</a>
+</header>
+
+@if (error()) {
+  <div class="aviso aviso-error">{{ error() }}</div>
+}
+
+<!-- @let: guarda un valor en una variable de la plantilla -->
+@let r = resumen();
+@if (r) {
+  <div class="rejilla">
+    <!-- Mis tareas -->
+    <section class="tarjeta">
+      <h2>📌 Mis tareas pendientes ({{ r.misTareas.length }})</h2>
+      <ul class="lista">
+        @for (t of r.misTareas; track t._id) {
+          <li>
+            <div class="fila separado">
+              <a [routerLink]="['/proyectos', t.proyectoId?._id]">{{ t.titulo }}</a>
+              <app-insignia-estado [estado]="t.estado" />
+            </div>
+            <small class="subtitulo">{{ t.proyectoId?.nombre }} · {{ t.specId?.codigo }}</small>
+          </li>
+        } @empty {
+          <li class="vacio">No tienes tareas pendientes 🎉</li>
+        }
+      </ul>
+    </section>
+
+    <!-- Specs por aprobar (solo líderes/admin) -->
+    @if (auth.tieneRol('LIDER', 'ADMIN')) {
+      <section class="tarjeta">
+        <h2>📝 Specs por aprobar ({{ r.specsPorAprobar.length }})</h2>
+        <ul class="lista">
+          @for (s of r.specsPorAprobar; track s._id) {
+            <li>
+              <a [routerLink]="['/specs', s._id]"><code>{{ s.codigo }}</code> {{ s.titulo }}</a>
+              <br /><small class="subtitulo">{{ s.proyectoId?.nombre }}</small>
+            </li>
+          } @empty {
+            <li class="vacio">Nada por aprobar.</li>
+          }
+        </ul>
+      </section>
+    }
+
+    <!-- PRs que me toca revisar -->
+    <section class="tarjeta">
+      <h2>🔍 Pull Requests por revisar ({{ r.revisionesPendientes.length }})</h2>
+      <ul class="lista">
+        @for (rev of r.revisionesPendientes; track rev._id) {
+          <li>
+            <a [routerLink]="['/proyectos', rev.tareaId?.proyectoId]" [queryParams]="{ pestana: 'revisiones' }">
+              {{ rev.tareaId?.titulo }}
+            </a>
+            <br /><small class="subtitulo">de {{ rev.autorId?.nombre }}</small>
+          </li>
+        } @empty {
+          <li class="vacio">No tienes revisiones pendientes.</li>
+        }
+      </ul>
+    </section>
+  </div>
+} @else if (!error()) {
+  <p class="vacio">Cargando…</p>
+}

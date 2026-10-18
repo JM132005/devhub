@@ -1,0 +1,69 @@
+<!-- prompts.html -->
+<header class="encabezado">
+  <div>
+    <h1>💡 Biblioteca de prompts</h1>
+    <p class="subtitulo">Prompts que le funcionaron al equipo con GitHub Copilot. Reemplaza los &lt;marcadores&gt; antes de usarlos.</p>
+  </div>
+  @if (!mostrarFormulario()) {
+    <button class="btn btn-primario" (click)="mostrarFormulario.set(true)">+ Guardar prompt</button>
+  }
+</header>
+
+@if (error()) {
+  <div class="aviso aviso-error">{{ error() }}</div>
+}
+
+@if (mostrarFormulario()) {
+  <form class="formulario tarjeta" [formGroup]="formulario" (ngSubmit)="guardar()" style="margin-bottom: 16px">
+    <div class="rejilla">
+      <label class="campo"><span>Título *</span><input formControlName="titulo" /></label>
+      <label class="campo">
+        <span>Categoría</span>
+        <select formControlName="categoria">
+          @for (c of categorias; track c) {
+            <option [value]="c">{{ c }}</option>
+          }
+        </select>
+      </label>
+    </div>
+    <label class="campo"><span>Prompt *</span><textarea formControlName="contenido" rows="5"></textarea></label>
+    <label class="campo"><span>Etiquetas (separadas por coma)</span><input formControlName="etiquetas" placeholder="nestjs, tdd" /></label>
+    <div class="fila">
+      <button class="btn btn-primario" type="submit" [disabled]="formulario.invalid">Guardar</button>
+      <button class="btn" type="button" (click)="mostrarFormulario.set(false)">Cancelar</button>
+    </div>
+  </form>
+}
+
+<div class="fila" style="margin-bottom: 16px">
+  @for (c of categorias; track c) {
+    <button class="btn btn-chico" [class.btn-primario]="categoria() === c" (click)="filtrar(c)">{{ c }}</button>
+  }
+  <input style="max-width: 240px" [(ngModel)]="busqueda" (keyup.enter)="buscar()" placeholder="Buscar por título y Enter" />
+</div>
+
+<div class="rejilla">
+  @for (p of prompts(); track p._id) {
+    <article class="tarjeta pila">
+      <div class="fila separado">
+        <strong>{{ p.titulo }}</strong>
+        <small class="subtitulo">{{ p.categoria }}</small>
+      </div>
+      <pre class="prompt">{{ p.contenido }}</pre>
+      <div class="fila">
+        @for (e of p.etiquetas; track e) {
+          <small class="mono">#{{ e }}</small>
+        }
+      </div>
+      <div class="fila separado">
+        <small class="subtitulo">por {{ p.autorId?.nombre ?? '—' }}</small>
+        <div class="fila">
+          <button class="btn btn-chico" (click)="votar(p)">👍 {{ p.votos }}</button>
+          <button class="btn btn-chico btn-primario" (click)="copiar(p)">{{ copiado() === p._id ? '¡Copiado!' : 'Copiar' }}</button>
+        </div>
+      </div>
+    </article>
+  } @empty {
+    <p class="vacio">No hay prompts con ese filtro.</p>
+  }
+</div>

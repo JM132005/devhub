@@ -1,0 +1,41 @@
+<!-- login.html -->
+<div class="fondo-login">
+  <section class="caja">
+    <div class="marca">
+      <span class="logo">⌘</span>
+      <div>
+        <h1>DevHub</h1>
+        <p class="subtitulo">Especifica · Asigna · Revisa · Entrega</p>
+      </div>
+    </div>
+
+    @if (error()) {
+      <div class="aviso aviso-error">{{ error() }}</div>
+    }
+
+    <!-- [formGroup] conecta el <form> con el formulario de TypeScript; (ngSubmit) se dispara al enviar. -->
+    <form class="formulario" [formGroup]="formulario" (ngSubmit)="entrar()">
+      <label class="campo">
+        <span>Correo</span>
+        <!-- formControlName: conecta el input con el control "correo" -->
+        <input type="email" formControlName="correo" autocomplete="username" placeholder="tu@empresa.com" />
+      </label>
+      <label class="campo">
+        <span>Contraseña</span>
+        <input type="password" formControlName="contrasena" autocomplete="current-password" />
+      </label>
+      <button class="btn btn-primario" type="submit" [disabled]="formulario.invalid || cargando()">
+        {{ cargando() ? 'Entrando…' : 'Iniciar sesión' }}
+      </button>
+    </form>
+
+    <div class="demo">
+      <small>Usuarios de prueba (contraseña <code>Devhub123*</code>):</small>
+      <div class="fila">
+        @for (correo of demo; track correo) {
+          <button type="button" class="btn btn-chico" (click)="usarDemo(correo)">{{ correo.split('@')[0] }}</button>
+        }
+      </div>
+    </div>
+  </section>
+</div>

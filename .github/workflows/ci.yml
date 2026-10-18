@@ -1,0 +1,88 @@
+# ci.yml → PIPELINE de Integración Continua (GitHub Actions).
+# Se ejecuta SOLO en cada push a main y en cada Pull Request hacia main.
+# Si algo falla, el PR queda en rojo y la protección de main impide fusionarlo.
+# Así se ataca el problema del caso: "errores frecuentes en producción".
+
+name: CI
+
+# on: eventos que disparan el pipeline.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Si llegan dos pushes seguidos al mismo PR, se cancela la ejecución vieja (ahorra minutos).
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ─────────────── Trabajo 1: Backend NestJS ───────────────
+  backend:
+    name: Backend (lint · test · build · e2e)
+    runs-on: ubuntu-latest # máquina virtual Linux que presta GitHub gratis
+    defaults:
+      run:
+        working-directory: backend # todos los comandos corren dentro de /backend
+
+    # services: levanta un contenedor de MongoDB REAL para las pruebas e2e.
+    services:
+      mongo:
+        image: mongo:7
+        ports: ['27017:27017']
+
+    env:
+      MONGO_URI_TEST: mongodb://localhost:27017/devhub_test
+      JWT_SECRET: secreto-solo-para-ci
+
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Instalar Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm # guarda node_modules entre ejecuciones (más rápido)
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Instalar dependencias exactas (package-lock)
+        run: npm ci
+
+      - name: Lint (estilo y errores comunes)
+        run: npm run lint
+
+      - name: Pruebas unitarias TDD (reglas RN-01 a RN-06)
+        run: npm test
+
+      - name: Compilar TypeScript
+        run: npm run build
+
+      - name: Pruebas end-to-end contra MongoDB (flujo SDD completo)
+        run: npm run test:e2e
+
+  # ─────────────── Trabajo 2: Frontend Angular ───────────────
+  frontend:
+    name: Frontend (build Angular)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - name: Compilar Angular (revisa tipos y plantillas)
+        run: npm run build
+      # upload-artifact: guarda la app compilada para descargarla o desplegarla (base del CD).
+      - name: Guardar la app compilada
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: frontend/dist/frontend/browser
+          retention-days: 7

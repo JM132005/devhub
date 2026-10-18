@@ -1,0 +1,41 @@
+<!-- proyectos.html -->
+<header class="encabezado">
+  <div>
+    <h1>Proyectos</h1>
+    <p class="subtitulo">Proyectos en los que participas.</p>
+  </div>
+  @if (auth.tieneRol('LIDER', 'ADMIN') && !mostrarFormulario()) {
+    <button class="btn btn-primario" (click)="mostrarFormulario.set(true)">+ Nuevo proyecto</button>
+  }
+</header>
+
+@if (error()) {
+  <div class="aviso aviso-error">{{ error() }}</div>
+}
+
+@if (mostrarFormulario()) {
+  <!-- (guardar)="crear($event)": cuando el formulario emite, $event trae los datos -->
+  <app-formulario-proyecto [usuarios]="usuarios()" (guardar)="crear($event)" (cancelar)="mostrarFormulario.set(false)" />
+  <br />
+}
+
+<div class="rejilla">
+  @for (p of proyectos(); track p._id) {
+    <a class="tarjeta enlace-tarjeta" [routerLink]="['/proyectos', p._id]">
+      <div class="fila separado">
+        <h2>{{ p.nombre }}</h2>
+        <app-insignia-estado [estado]="p.estado" />
+      </div>
+      <p class="subtitulo">{{ p.descripcion || 'Sin descripción' }}</p>
+      <div class="fila separado">
+        <small>👤 Líder: {{ nombreDe(p.liderId) }}</small>
+        <small>🎯 {{ p.milestones.length }} milestones</small>
+      </div>
+      @if (p.repoGithub) {
+        <small class="mono">⎇ {{ p.repoGithub }}</small>
+      }
+    </a>
+  } @empty {
+    <p class="vacio">Todavía no participas en ningún proyecto.</p>
+  }
+</div>

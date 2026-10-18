@@ -1,0 +1,142 @@
+/* styles.css → estilos GLOBALES de DevHub. Diseño "mobile first": primero celular, luego pantallas grandes. */
+
+/* ---------- Variables de diseño (colores, radios, sombras) ---------- */
+:root {
+  --fondo: #f4f5f7;
+  --superficie: #ffffff;
+  --superficie-2: #eef0f4;
+  --borde: #dde1e8;
+  --texto: #1c2230;
+  --texto-suave: #5d6678;
+  --marca: #3b4cca;          /* azul índigo de DevHub */
+  --marca-suave: #e6e9fb;
+  --exito: #1f8a5b;
+  --exito-suave: #e1f4ea;
+  --alerta: #b7791f;
+  --alerta-suave: #fbf0dc;
+  --peligro: #c2412d;
+  --peligro-suave: #fbe5e1;
+  --radio: 10px;
+  --sombra: 0 1px 2px rgb(16 24 40 / 6%), 0 1px 3px rgb(16 24 40 / 8%);
+  --fuente: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --mono: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  color-scheme: light;
+}
+
+/* Modo oscuro automático según el sistema operativo */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fondo: #12151c;
+    --superficie: #1b1f29;
+    --superficie-2: #242a36;
+    --borde: #2f3644;
+    --texto: #e7eaf0;
+    --texto-suave: #9aa3b5;
+    --marca: #8794f5;
+    --marca-suave: #262c4d;
+    --exito: #4cc38a;
+    --exito-suave: #183527;
+    --alerta: #e2b45c;
+    --alerta-suave: #3a2f17;
+    --peligro: #f08470;
+    --peligro-suave: #3d201b;
+    --sombra: none;
+    color-scheme: dark;
+  }
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { font-family: var(--fuente); background: var(--fondo); color: var(--texto); line-height: 1.5; }
+a { color: var(--marca); text-decoration: none; }
+a:hover { text-decoration: underline; }
+h1 { font-size: 1.4rem; margin: 0 0 .25rem; }
+h2 { font-size: 1.1rem; margin: 0 0 .75rem; }
+h3 { font-size: 1rem; margin: 0 0 .5rem; }
+code, .mono { font-family: var(--mono); font-size: .85em; }
+
+/* ---------- Estructura: menú + contenido ---------- */
+.marco { min-height: 100vh; }
+.contenido { padding: 16px 16px 88px; max-width: 1200px; margin: 0 auto; } /* 88px: espacio para el menú inferior en celular */
+@media (min-width: 900px) {
+  .marco { display: grid; grid-template-columns: 230px 1fr; }
+  .contenido { padding: 28px 32px; width: 100%; }
+}
+
+.encabezado { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.subtitulo { color: var(--texto-suave); margin: 0; font-size: .92rem; }
+
+/* ---------- Tarjetas y rejillas ---------- */
+.tarjeta { background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio); padding: 16px; box-shadow: var(--sombra); }
+.rejilla { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.pila { display: grid; gap: 12px; }
+.fila { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.separado { justify-content: space-between; }
+.vacio { color: var(--texto-suave); font-size: .9rem; padding: 8px 0; }
+
+/* ---------- Botones ---------- */
+.btn {
+  font: inherit; font-size: .9rem; font-weight: 600; cursor: pointer;
+  border: 1px solid var(--borde); background: var(--superficie); color: var(--texto);
+  padding: 8px 14px; border-radius: 8px; display: inline-flex; gap: 6px; align-items: center;
+}
+.btn:hover { background: var(--superficie-2); }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn-primario { background: var(--marca); border-color: var(--marca); color: #fff; }
+.btn-primario:hover { background: var(--marca); filter: brightness(1.08); }
+.btn-exito { background: var(--exito); border-color: var(--exito); color: #fff; }
+.btn-peligro { color: var(--peligro); border-color: var(--peligro); }
+.btn-chico { padding: 4px 10px; font-size: .8rem; }
+
+/* ---------- Formularios ---------- */
+.formulario { display: grid; gap: 12px; }
+.campo { display: grid; gap: 4px; }
+.campo > span { font-size: .82rem; font-weight: 600; color: var(--texto-suave); }
+.campo small { color: var(--texto-suave); font-size: .78rem; }
+input, select, textarea {
+  font: inherit; color: var(--texto); background: var(--superficie);
+  border: 1px solid var(--borde); border-radius: 8px; padding: 9px 11px; width: 100%;
+}
+textarea { min-height: 84px; resize: vertical; }
+input:focus, select:focus, textarea:focus { outline: 2px solid var(--marca-suave); border-color: var(--marca); }
+.check { display: flex; gap: 8px; align-items: center; font-size: .9rem; }
+.check input { width: auto; }
+
+/* ---------- Avisos ---------- */
+.aviso { padding: 10px 14px; border-radius: 8px; font-size: .9rem; margin-bottom: 12px; }
+.aviso-error { background: var(--peligro-suave); color: var(--peligro); }
+.aviso-ok { background: var(--exito-suave); color: var(--exito); }
+
+/* ---------- Pestañas ---------- */
+.pestanas { display: flex; gap: 4px; overflow-x: auto; border-bottom: 1px solid var(--borde); margin-bottom: 16px; }
+.pestanas button {
+  font: inherit; font-weight: 600; font-size: .9rem; background: none; border: none; cursor: pointer;
+  padding: 10px 14px; color: var(--texto-suave); border-bottom: 2px solid transparent; white-space: nowrap;
+}
+.pestanas button.activa { color: var(--marca); border-bottom-color: var(--marca); }
+
+/* ---------- Listas simples ---------- */
+.lista { list-style: none; padding: 0; margin: 0; }
+.lista li { padding: 10px 0; border-bottom: 1px solid var(--borde); }
+.lista li:last-child { border-bottom: none; }
+
+/* ---------- Barra de progreso ---------- */
+.barra { height: 8px; background: var(--superficie-2); border-radius: 99px; overflow: hidden; }
+.barra > div { height: 100%; background: var(--exito); border-radius: 99px; transition: width .3s; }
+
+/* ---------- Tabla ---------- */
+.tabla-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--borde); }
+th { font-size: .78rem; text-transform: uppercase; letter-spacing: .03em; color: var(--texto-suave); }
+
+/* ---------- Detalles específicos ---------- */
+/* Tarjeta que funciona como enlace (proyectos, specs) */
+.enlace-tarjeta { color: inherit; display: grid; gap: 6px; transition: border-color .15s; }
+.enlace-tarjeta:hover { text-decoration: none; border-color: var(--marca); }
+/* Texto del prompt con saltos de línea respetados */
+.prompt { white-space: pre-wrap; font-family: var(--mono); font-size: .8rem; background: var(--superficie-2); padding: 10px; border-radius: 8px; margin: 0; }
+/* Detalle de spec: contenido ancho + columna lateral en pantallas grandes */
+@media (min-width: 900px) { .columnas-spec { grid-template-columns: 2fr 1fr; } }
+/* Caja de la checklist del revisor */
+.caja-revision { background: var(--superficie-2); padding: 12px; border-radius: 8px; }

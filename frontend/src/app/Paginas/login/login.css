@@ -1,0 +1,13 @@
+/* login.css */
+.fondo-login { min-height: 100vh; display: grid; place-items: center; padding: 16px; }
+.caja {
+  width: 100%; max-width: 380px; background: var(--superficie); border: 1px solid var(--borde);
+  border-radius: 14px; padding: 28px 24px; box-shadow: var(--sombra);
+}
+.marca { display: flex; gap: 12px; align-items: center; margin-bottom: 22px; }
+.logo {
+  background: var(--marca); color: #fff; width: 44px; height: 44px; border-radius: 10px;
+  display: grid; place-items: center; font-size: 1.4rem;
+}
+.demo { margin-top: 20px; border-top: 1px solid var(--borde); padding-top: 14px; display: grid; gap: 8px; }
+.demo small { color: var(--texto-suave); }

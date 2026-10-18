@@ -1,0 +1,32 @@
+/* menu-principal.css → en celular: barra fija abajo con íconos. En computadora (≥900px): barra lateral. */
+
+.menu {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 10;
+  background: var(--superficie); border-top: 1px solid var(--borde);
+}
+.logo, .usuario { display: none; }
+ul { display: flex; justify-content: space-around; list-style: none; margin: 0; padding: 6px 4px; }
+a {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  font-size: .72rem; color: var(--texto-suave); padding: 6px 10px; border-radius: 8px; text-decoration: none;
+}
+a.activo { color: var(--marca); background: var(--marca-suave); }
+.icono { font-size: 1.2rem; }
+
+@media (min-width: 900px) {
+  .menu {
+    position: sticky; top: 0; height: 100vh; border-top: none; border-right: 1px solid var(--borde);
+    display: flex; flex-direction: column; padding: 20px 14px;
+  }
+  .logo { display: flex; gap: 10px; align-items: center; font-weight: 800; font-size: 1.15rem; padding: 0 8px 20px; }
+  .logo-icono { background: var(--marca); color: #fff; width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center; }
+  ul { flex-direction: column; justify-content: flex-start; gap: 2px; padding: 0; flex: 1; }
+  a { flex-direction: row; gap: 10px; font-size: .92rem; font-weight: 600; padding: 9px 10px; }
+  .icono { font-size: 1rem; }
+  .usuario {
+    display: flex; justify-content: space-between; align-items: center; gap: 8px;
+    border-top: 1px solid var(--borde); padding-top: 14px;
+  }
+  .usuario div { display: grid; font-size: .85rem; }
+  .usuario small { color: var(--texto-suave); }
+}

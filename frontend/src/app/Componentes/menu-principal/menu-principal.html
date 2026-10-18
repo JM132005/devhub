@@ -1,0 +1,30 @@
+<!-- menu-principal.html -->
+<nav class="menu">
+  <div class="logo">
+    <span class="logo-icono">⌘</span>
+    <span>DevHub</span>
+  </div>
+
+  <ul>
+    <!-- @for: repite el <li> por cada enlace. track: identifica cada elemento para redibujar eficiente. -->
+    @for (enlace of enlaces; track enlace.ruta) {
+      @if (!enlace.soloAdmin || auth.tieneRol('ADMIN')) {
+        <li>
+          <a [routerLink]="enlace.ruta" routerLinkActive="activo">
+            <span class="icono">{{ enlace.icono }}</span>
+            <span>{{ enlace.texto }}</span>
+          </a>
+        </li>
+      }
+    }
+  </ul>
+
+  <!-- Datos del usuario conectado y botón salir -->
+  <div class="usuario">
+    <div>
+      <strong>{{ auth.usuario()?.nombre }}</strong>
+      <small>{{ etiqueta(auth.usuario()?.rol) }}</small>
+    </div>
+    <button class="btn btn-chico" (click)="auth.logout()">Salir</button>
+  </div>
+</nav>

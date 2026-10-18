@@ -1,0 +1,102 @@
+<!-- spec-detalle.html -->
+@let s = spec();
+@if (error()) {
+  <div class="aviso aviso-error">⚠️ {{ error() }}</div>
+}
+@if (exito()) {
+  <div class="aviso aviso-ok">✔ {{ exito() }}</div>
+}
+
+@if (s) {
+  <header class="encabezado">
+    <div>
+      <a [routerLink]="['/proyectos', s.proyectoId]" [queryParams]="{ pestana: 'specs' }" class="subtitulo">← Volver al proyecto</a>
+      <h1><code>{{ s.codigo }}</code> {{ s.titulo }}</h1>
+      <p class="subtitulo">
+        Versión {{ s.version }} · Autor: {{ s.autorId?.nombre }}
+        @if (s.aprobadaPorId) { · Aprobada por {{ s.aprobadaPorId.nombre }} }
+      </p>
+    </div>
+    <app-insignia-estado [estado]="s.estado" />
+  </header>
+
+  @if (editando()) {
+    <app-formulario-spec [inicial]="s" (guardar)="guardarEdicion($event)" (cancelar)="editando.set(false)" />
+  } @else {
+    <div class="rejilla columnas-spec">
+      <!-- Contenido de la spec -->
+      <section class="tarjeta pila">
+        <div>
+          <h3>Historia de usuario</h3>
+          <p>{{ s.historia }}</p>
+        </div>
+        <div>
+          <h3>Requisitos</h3>
+          <ol>
+            @for (r of s.requisitos; track $index) {
+              <li>{{ r }}</li>
+            }
+          </ol>
+        </div>
+        <div>
+          <h3>Criterios de aceptación</h3>
+          <ul>
+            @for (c of s.criteriosAceptacion; track $index) {
+              <li>{{ c }}</li>
+            }
+          </ul>
+        </div>
+
+        <!-- Botones según estado y rol -->
+        <div class="fila">
+          @if (s.estado === 'BORRADOR') {
+            <button class="btn btn-primario" (click)="enviar()">Enviar a revisión</button>
+          }
+          @if (s.estado === 'EN_REVISION' && puedeAprobar()) {
+            <button class="btn btn-exito" (click)="aprobar()">✔ Aprobar</button>
+            <button class="btn btn-peligro" (click)="devolver()">Devolver con comentario</button>
+          }
+          @if (s.estado !== 'IMPLEMENTADA') {
+            <button class="btn" (click)="editando.set(true)">✏️ Editar</button>
+          }
+        </div>
+      </section>
+
+      <!-- Comentarios e historial -->
+      <aside class="pila">
+        <section class="tarjeta pila">
+          <h3>💬 Comentarios</h3>
+          <ul class="lista">
+            @for (c of s.comentarios; track $index) {
+              <li>
+                <strong>{{ c.autorId?.nombre }}</strong>
+                <small class="subtitulo"> · {{ c.fecha | date: 'dd/MM HH:mm' }}</small>
+                <div>{{ c.texto }}</div>
+              </li>
+            } @empty {
+              <li class="vacio">Sin comentarios.</li>
+            }
+          </ul>
+          <textarea [(ngModel)]="comentario" placeholder="Escribe un comentario…"></textarea>
+          <div><button class="btn btn-chico" (click)="comentar()">Comentar</button></div>
+        </section>
+
+        <section class="tarjeta">
+          <h3>🕓 Historial de versiones</h3>
+          <ul class="lista">
+            @for (h of s.historial ?? []; track $index) {
+              <li>
+                <strong>v{{ h.version }}</strong> — {{ h.cambio }}
+                <br /><small class="subtitulo">{{ h.autorId?.nombre }} · {{ h.fecha | date: 'dd/MM/yyyy HH:mm' }}</small>
+              </li>
+            } @empty {
+              <li class="vacio">Es la primera versión.</li>
+            }
+          </ul>
+        </section>
+      </aside>
+    </div>
+  }
+} @else if (!error()) {
+  <p class="vacio">Cargando…</p>
+}

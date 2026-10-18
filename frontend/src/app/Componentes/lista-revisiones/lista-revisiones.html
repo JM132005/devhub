@@ -1,0 +1,47 @@
+<!-- lista-revisiones.html -->
+<div class="pila">
+  @for (r of revisiones(); track r._id) {
+    <article class="tarjeta pila">
+      <div class="fila separado">
+        <strong>{{ r.tareaId?.titulo }}</strong>
+        <app-insignia-estado [estado]="r.estado" />
+      </div>
+      <small class="subtitulo">
+        Autor: {{ r.autorId?.nombre }} · Revisor: {{ r.revisorId?.nombre }} · {{ r.createdAt | date: 'dd/MM HH:mm' }}
+      </small>
+      <!-- target="_blank": abre el PR de GitHub en otra pestaña -->
+      <a [href]="r.urlPr" target="_blank" rel="noopener">🔗 {{ r.urlPr }}</a>
+      @if (r.comentario) {
+        <p class="subtitulo">💬 {{ r.comentario }}</p>
+      }
+
+      @if (meToca(r)) {
+        @if (abierta() === r._id) {
+          <div class="pila caja-revision">
+            <strong>Checklist del revisor</strong>
+            @for (p of puntos; track p.clave) {
+              <label class="check">
+                <input type="checkbox" [checked]="checklist[p.clave]" (change)="marcar(p.clave, $any($event.target).checked)" />
+                {{ p.texto }}
+              </label>
+            }
+            <textarea [(ngModel)]="comentario" placeholder="Comentario (obligatorio si pides cambios)"></textarea>
+            <div class="fila">
+              <button class="btn btn-exito" [disabled]="!checklistCompleta()" (click)="aprobar.emit({ revision: r, checklist, comentario })">
+                ✔ Aprobar
+              </button>
+              <button class="btn btn-peligro" [disabled]="!comentario.trim()" (click)="pedirCambios.emit({ revision: r, comentario })">
+                Pedir cambios
+              </button>
+              <button class="btn" (click)="abierta.set(null)">Cancelar</button>
+            </div>
+          </div>
+        } @else {
+          <div><button class="btn btn-primario btn-chico" (click)="abrir(r)">Revisar ahora</button></div>
+        }
+      }
+    </article>
+  } @empty {
+    <p class="vacio">Aún no hay Pull Requests registrados.</p>
+  }
+</div>

@@ -1,0 +1,37 @@
+<!-- formulario-spec.html -->
+<form class="formulario tarjeta" [formGroup]="formulario" (ngSubmit)="enviar()">
+  <h2>{{ inicial() ? 'Editar ' + inicial()!.codigo : 'Nueva especificación' }}</h2>
+
+  @if (inicial()?.estado === 'APROBADA') {
+    <div class="aviso aviso-error">RN-05: al editar una spec aprobada vuelve a "En revisión" y necesita aprobarse otra vez.</div>
+  }
+
+  <label class="campo">
+    <span>Título *</span>
+    <input formControlName="titulo" placeholder="Inicio de sesión con roles" />
+  </label>
+  <label class="campo">
+    <span>Historia de usuario *</span>
+    <textarea formControlName="historia"></textarea>
+  </label>
+  <label class="campo">
+    <span>Requisitos * (uno por línea)</span>
+    <textarea formControlName="requisitos" placeholder="Correo y contraseña obligatorios&#10;Contraseña cifrada con bcrypt"></textarea>
+  </label>
+  <label class="campo">
+    <span>Criterios de aceptación * (uno por línea)</span>
+    <textarea formControlName="criterios" placeholder="Dado ..., cuando ..., entonces ..."></textarea>
+    <small>Formato recomendado: Dado [contexto], cuando [acción], entonces [resultado].</small>
+  </label>
+  @if (inicial()) {
+    <label class="campo">
+      <span>¿Qué cambiaste? (queda en el historial)</span>
+      <input formControlName="cambio" placeholder="Agregué el caso de error" />
+    </label>
+  }
+
+  <div class="fila">
+    <button class="btn btn-primario" type="submit" [disabled]="formulario.invalid">Guardar</button>
+    <button class="btn" type="button" (click)="cancelar.emit()">Cancelar</button>
+  </div>
+</form>

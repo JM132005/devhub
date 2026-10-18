@@ -1,0 +1,44 @@
+<!-- tablero-kanban.html → en celular las columnas se deslizan horizontalmente -->
+<div class="tablero">
+  @for (col of columnas; track col) {
+    <section class="columna">
+      <header class="fila separado">
+        <h3>{{ etiqueta(col) }}</h3>
+        <span class="contador">{{ porColumna()[col].length }}</span>
+      </header>
+
+      @for (t of porColumna()[col]; track t._id) {
+        <article class="tarjeta-tarea" [class.mia]="esMia(t)">
+          <div class="fila separado">
+            <code>{{ t.specId?.codigo }}</code>
+            <app-insignia-estado [estado]="t.prioridad" />
+          </div>
+          <strong>{{ t.titulo }}</strong>
+          <small class="subtitulo">👤 {{ t.asignadoId?.nombre ?? 'Sin asignar' }}</small>
+          @if (t.rama) {
+            <small class="mono">⎇ {{ t.rama }}</small>
+          }
+
+          @if (puedeMover(t)) {
+            <div class="acciones">
+              @let anterior = vecina(t.estado, -1);
+              @let siguiente = vecina(t.estado, 1);
+              @if (anterior) {
+                <button class="btn btn-chico" (click)="mover.emit({ tarea: t, estado: anterior })" [title]="'Mover a ' + etiqueta(anterior)">◀</button>
+              }
+              <!-- El PR lo registra el responsable cuando la tarea está en progreso -->
+              @if (t.estado === 'EN_PROGRESO' && esMia(t)) {
+                <button class="btn btn-chico btn-primario" (click)="registrarPr.emit(t)">Registrar PR</button>
+              }
+              @if (siguiente) {
+                <button class="btn btn-chico" (click)="mover.emit({ tarea: t, estado: siguiente })" [title]="'Mover a ' + etiqueta(siguiente)">▶</button>
+              }
+            </div>
+          }
+        </article>
+      } @empty {
+        <p class="vacio">—</p>
+      }
+    </section>
+  }
+</div>

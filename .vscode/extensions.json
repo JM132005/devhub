@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "angular.ng-template",
+    "esbenp.prettier-vscode",
+    "github.copilot",
+    "github.copilot-chat",
+    "mongodb.mongodb-vscode",
+    "github.vscode-pull-request-github"
+  ]
+}

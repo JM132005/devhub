@@ -1,0 +1,26 @@
+<!-- formulario-revision.html -->
+<form class="formulario tarjeta" [formGroup]="formulario" (ngSubmit)="enviar()">
+  <h2>Registrar Pull Request · {{ tarea().titulo }}</h2>
+  <label class="campo">
+    <span>Rama de Git *</span>
+    <input class="mono" formControlName="rama" placeholder="feat/5-login-api" />
+    <small>Convención: feat/ · fix/ · docs/ · test/ · ci/ + número de Issue + descripción</small>
+  </label>
+  <label class="campo">
+    <span>URL del Pull Request *</span>
+    <input formControlName="urlPr" placeholder="https://github.com/equipo/devhub/pull/5" />
+  </label>
+  <label class="campo">
+    <span>Revisor * (no puedes ser tú → RN-04)</span>
+    <select formControlName="revisorId">
+      <option value="">— Elige revisor —</option>
+      @for (u of revisores(); track u._id) {
+        <option [value]="u._id">{{ u.nombre }}</option>
+      }
+    </select>
+  </label>
+  <div class="fila">
+    <button class="btn btn-primario" type="submit" [disabled]="formulario.invalid">Enviar a revisión</button>
+    <button class="btn" type="button" (click)="cancelar.emit()">Cancelar</button>
+  </div>
+</form>

@@ -1,0 +1,59 @@
+<!-- panel-metricas.html -->
+@let m = metricas();
+<div class="indicadores">
+  <div class="tarjeta indicador">
+    <span>Avance general</span>
+    <strong>{{ m.avanceGeneral }}%</strong>
+    <div class="barra"><div [style.width.%]="m.avanceGeneral"></div></div>
+  </div>
+  <div class="tarjeta indicador">
+    <span>Tareas terminadas</span>
+    <strong>{{ m.tareasPorEstado['HECHO'] }}</strong>
+  </div>
+  <div class="tarjeta indicador">
+    <span>Specs por aprobar</span>
+    <strong>{{ m.specsPorEstado['EN_REVISION'] }}</strong>
+  </div>
+  <div class="tarjeta indicador">
+    <span>PRs abiertos</span>
+    <strong>{{ m.revisionesAbiertas }}</strong>
+  </div>
+</div>
+
+<div class="rejilla">
+  <section class="tarjeta">
+    <h3>Tareas por estado</h3>
+    <ul class="lista">
+      @for (c of columnas; track c) {
+        <li class="fila separado"><span>{{ etiqueta(c) }}</span><strong>{{ m.tareasPorEstado[c] }}</strong></li>
+      }
+    </ul>
+  </section>
+
+  <section class="tarjeta">
+    <h3>Specs por estado</h3>
+    <ul class="lista">
+      @for (e of estadosSpec; track e) {
+        <li class="fila separado"><span>{{ etiqueta(e) }}</span><strong>{{ m.specsPorEstado[e] }}</strong></li>
+      }
+    </ul>
+  </section>
+
+  <section class="tarjeta">
+    <h3>Milestones</h3>
+    <ul class="lista">
+      @for (ms of m.milestones; track ms._id) {
+        <li class="pila">
+          <div class="fila separado">
+            <strong>{{ ms.nombre }}</strong>
+            <small class="subtitulo">{{ ms.fechaLimite | date: 'dd/MM/yyyy' }}</small>
+          </div>
+          <div class="barra"><div [style.width.%]="ms.porcentaje"></div></div>
+          <small class="subtitulo">{{ ms.hechas }} de {{ ms.total }} tareas · {{ ms.porcentaje }}%</small>
+        </li>
+      } @empty {
+        <li class="vacio">Sin milestones.</li>
+      }
+    </ul>
+  </section>
+</div>

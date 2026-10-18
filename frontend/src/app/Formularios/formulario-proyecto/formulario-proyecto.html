@@ -1,0 +1,40 @@
+<!-- formulario-proyecto.html -->
+<form class="formulario tarjeta" [formGroup]="formulario" (ngSubmit)="enviar()">
+  <h2>Nuevo proyecto</h2>
+  <label class="campo">
+    <span>Nombre *</span>
+    <input formControlName="nombre" placeholder="App Farmacia" />
+  </label>
+  <label class="campo">
+    <span>Descripción</span>
+    <textarea formControlName="descripcion" placeholder="¿Qué problema resuelve?"></textarea>
+  </label>
+  <div class="rejilla">
+    <label class="campo">
+      <span>Cliente</span>
+      <input formControlName="cliente" placeholder="Farmacia El Oro" />
+    </label>
+    <label class="campo">
+      <span>Repositorio GitHub</span>
+      <input formControlName="repoGithub" placeholder="equipo/app-farmacia" />
+      <small>Formato usuario/repositorio</small>
+    </label>
+  </div>
+
+  <div class="campo">
+    <span>Equipo</span>
+    <div class="fila">
+      @for (u of usuarios(); track u._id) {
+        <label class="check">
+          <input type="checkbox" [checked]="miembros().has(u._id)" (change)="alternarMiembro(u._id)" />
+          {{ u.nombre }}
+        </label>
+      }
+    </div>
+  </div>
+
+  <div class="fila">
+    <button class="btn btn-primario" type="submit" [disabled]="formulario.invalid">Crear proyecto</button>
+    <button class="btn" type="button" (click)="cancelar.emit()">Cancelar</button>
+  </div>
+</form>

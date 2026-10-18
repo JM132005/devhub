@@ -1,0 +1,6 @@
+/* panel-metricas.css */
+.indicadores { display: grid; gap: 12px; grid-template-columns: repeat(2, 1fr); margin-bottom: 16px; }
+@media (min-width: 700px) { .indicadores { grid-template-columns: repeat(4, 1fr); } }
+.indicador { display: grid; gap: 6px; }
+.indicador span { font-size: .8rem; color: var(--texto-suave); font-weight: 600; }
+.indicador strong { font-size: 1.6rem; line-height: 1; }

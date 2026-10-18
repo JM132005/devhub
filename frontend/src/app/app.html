@@ -1,0 +1,11 @@
+<!-- app.html → si hay sesión: menú + contenido; si no: solo el contenido (pantalla de login). -->
+@if (auth.conectado()) {
+  <div class="marco">
+    <app-menu-principal />
+    <main class="contenido">
+      <router-outlet />
+    </main>
+  </div>
+} @else {
+  <router-outlet />
+}

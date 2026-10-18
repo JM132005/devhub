@@ -1,0 +1,54 @@
+<!-- formulario-tarea.html -->
+<form class="formulario tarjeta" [formGroup]="formulario" (ngSubmit)="enviar()">
+  <h2>Nueva tarea</h2>
+
+  @if (specsAprobadas().length === 0) {
+    <div class="aviso aviso-error">RN-02: no hay specs APROBADAS. Primero escribe y aprueba una spec.</div>
+  }
+
+  <label class="campo">
+    <span>Spec de origen * (solo aprobadas)</span>
+    <select formControlName="specId">
+      <option value="">— Elige una spec —</option>
+      @for (s of specsAprobadas(); track s._id) {
+        <option [value]="s._id">{{ s.codigo }} · {{ s.titulo }}</option>
+      }
+    </select>
+  </label>
+  <label class="campo">
+    <span>Título *</span>
+    <input formControlName="titulo" placeholder="API de login con JWT" />
+  </label>
+  <div class="rejilla">
+    <label class="campo">
+      <span>Responsable</span>
+      <select formControlName="asignadoId">
+        <option value="">Sin asignar</option>
+        @for (u of equipo(); track u._id) {
+          <option [value]="u._id">{{ u.nombre }}</option>
+        }
+      </select>
+    </label>
+    <label class="campo">
+      <span>Milestone</span>
+      <select formControlName="milestoneId">
+        <option value="">Ninguno</option>
+        @for (m of milestones(); track m._id) {
+          <option [value]="m._id">{{ m.nombre }}</option>
+        }
+      </select>
+    </label>
+    <label class="campo">
+      <span>Prioridad</span>
+      <select formControlName="prioridad">
+        <option value="ALTA">Alta</option>
+        <option value="MEDIA">Media</option>
+        <option value="BAJA">Baja</option>
+      </select>
+    </label>
+  </div>
+  <div class="fila">
+    <button class="btn btn-primario" type="submit" [disabled]="formulario.invalid">Crear tarea</button>
+    <button class="btn" type="button" (click)="cancelar.emit()">Cancelar</button>
+  </div>
+</form>

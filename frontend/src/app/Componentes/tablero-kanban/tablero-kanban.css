@@ -1,0 +1,15 @@
+/* tablero-kanban.css → scroll-snap: en celular cada columna "encaja" al deslizar con el dedo. */
+.tablero {
+  display: grid; grid-auto-flow: column; grid-auto-columns: 82%; gap: 12px;
+  overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px;
+}
+@media (min-width: 900px) { .tablero { grid-auto-flow: row; grid-template-columns: repeat(4, 1fr); overflow: visible; } }
+
+.columna { scroll-snap-align: start; background: var(--superficie-2); border-radius: var(--radio); padding: 10px; display: grid; gap: 10px; align-content: start; min-height: 200px; }
+.columna h3 { margin: 0; font-size: .85rem; text-transform: uppercase; letter-spacing: .03em; color: var(--texto-suave); }
+.contador { font-size: .75rem; font-weight: 700; background: var(--superficie); border-radius: 99px; padding: 0 8px; }
+
+.tarjeta-tarea { background: var(--superficie); border: 1px solid var(--borde); border-radius: 8px; padding: 10px; display: grid; gap: 4px; }
+.tarjeta-tarea.mia { border-left: 3px solid var(--marca); }
+.tarjeta-tarea code { color: var(--texto-suave); }
+.acciones { display: flex; gap: 6px; justify-content: space-between; margin-top: 6px; }
